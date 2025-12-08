@@ -91,15 +91,15 @@ def test_agency_barcode(config):
         
         # 2. กด A 
         main_window.child_window(title=AB_CFG['HOTKEY_A_TITLE'], 
-                                 auto_id=AB_CFG['HOTKEY_A_AUTO_ID'], 
-                                 control_type=AB_CFG['HOTKEY_A_CONTROL_TYPE']).click_input()
+                                auto_id=AB_CFG['HOTKEY_A_AUTO_ID'], 
+                                control_type=AB_CFG['HOTKEY_A_CONTROL_TYPE']).click_input()
         time.sleep(SLEEP_TIME)
         print("[/] เปิดหน้า agency สำเร็จ")
 
         # 3. กด S 
         main_window.child_window(title=AB_CFG['HOTKEY_S_TITLE'], 
-                                 auto_id=AB_CFG['HOTKEY_S_AUTO_ID'], 
-                                 control_type=AB_CFG['HOTKEY_A_CONTROL_TYPE']).click_input()
+                                auto_id=AB_CFG['HOTKEY_S_AUTO_ID'], 
+                                control_type=AB_CFG['HOTKEY_A_CONTROL_TYPE']).click_input()
         time.sleep(SLEEP_TIME)
         print("[/] เปิดหน้า agency barcode สำเร็จ")
 
@@ -113,7 +113,7 @@ def test_agency_barcode(config):
         }
         # ตรวจสอบว่ามี title หรือไม่ และเพิ่มเข้าไป
         if 'PHONE_TITLE' in PH_CFG:
-             phone_selectors['title'] = PH_CFG['PHONE_TITLE']
+            phone_selectors['title'] = PH_CFG['PHONE_TITLE']
         
         print(f"DEBUG: Selector ที่ใช้ค้นหา: {phone_selectors}")
         
@@ -154,8 +154,8 @@ def test_agency_barcode(config):
         
         # 5.1 กดปุ่ม 'อ่านบัตรประชาชน'
         main_window.child_window(title=ID_CFG['ID_TITLE'], 
-                                 auto_id=ID_CFG['ID_AUTO_ID'], 
-                                 control_type=ID_CFG['ID_CONTROL_TYPE']).click_input()
+                                auto_id=ID_CFG['ID_AUTO_ID'], 
+                                control_type=ID_CFG['ID_CONTROL_TYPE']).click_input()
         time.sleep(SLEEP_TIME)
 
 
