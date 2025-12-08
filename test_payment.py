@@ -1,150 +1,76 @@
-from pywinauto.application import Application
-from pywinauto import mouse
-import time
 import configparser
-import os 
+from pywinauto.application import Application
+import time
+import os
 
-# ================= 1. Config Loader (INI) =================
+# ชื่อไฟล์ Config
+CONFIG_FILE = "config.ini"
 
-def load_ini_config(file_path='element_config.ini'):
-    """โหลดและจัดระเบียบข้อมูลจากไฟล์ INI ให้เป็นโครงสร้าง Dict ที่ใช้งานง่าย"""
+def read_config(filename=CONFIG_FILE):
+    """อ่านและโหลดค่าจากไฟล์ config.ini"""
     config = configparser.ConfigParser()
-    if not os.path.exists(file_path):
-        # หากไม่พบไฟล์ ให้ยกเลิกการทำงาน
-        raise FileNotFoundError(f"Config file not found: {file_path}")
-        
-    config.read(file_path, encoding='utf-8')
-    
-    # 1. โหลดส่วน APP_CONFIG และ SCROLL_CONFIG
-    app_config = dict(config.items('APP_CONFIG')) if config.has_section('APP_CONFIG') else {}
-    scroll_config = dict(config.items('SCROLL_CONFIG')) if config.has_section('SCROLL_CONFIG') else {}
-    
-    # 2. จัดกลุ่ม Elements: แปลง key-value ของ Elements ให้เป็น dict ของแต่ละ Element
-    elements_config = {}
-    
-    if config.has_section('ELEMENTS'):
-        for key, value in config.items('ELEMENTS'):
-            parts = key.rsplit('_', 1)
-            
-            # ตรวจสอบว่าคีย์นั้นเป็น Selector ที่เรารู้จักหรือไม่
-            if len(parts) > 1 and parts[-1] in ['title', 'auto_id', 'control_type', 'keys', 'class_name']:
-                element_name = "_".join(parts[:-1]) # เช่น 'click_menu_A'
-                selector_type = parts[-1]          # เช่น 'title'
-                
-                # จัดกลุ่มลงใน Dictionary ย่อย
-                if element_name not in elements_config:
-                    elements_config[element_name] = {}
-                    
-                elements_config[element_name][selector_type] = value
-            
-            # จัดการกับ Test Data ที่ไม่ได้เป็น Selector Group
-            elif key.endswith('_keys'):
-                elements_config[key] = value
-
-    return app_config, elements_config, scroll_config
-
-# โหลด config เมื่อเริ่มต้น (Global Access)
-try:
-    APP_CONFIG, ELEMENT_CONFIG, SCROLL_CONFIG = load_ini_config()
-    print("[/] Configuration loaded successfully from element_config.ini")
-except FileNotFoundError as e:
-    print(f"[CRITICAL ERROR] {e}")
-    exit(1)
-
-
-# ================= 2. Helper Functions =================
-
-# ฟังก์ชัน Log แบบง่าย
-def log(message):
-    print(message) 
-
-def force_scroll_down(window):
-    """
-    ฟังก์ชันช่วยเลื่อนหน้าจอลง (Scroll) โดยใช้ Mouse Wheel และดึงค่าจาก SCROLL_CONFIG
-    """
     try:
-        # ดึงค่าจาก Config และแปลงเป็น Integer
-        scroll_dist = int(SCROLL_CONFIG.get('scroll_distance', -5))
-        center_x_offset = int(SCROLL_CONFIG.get('scroll_center_x_offset', 300))
-        center_y_offset = int(SCROLL_CONFIG.get('scroll_center_y_offset', 300))
-    except ValueError:
-        log("[!] Scroll Config values are not valid integers. Using defaults.")
-        scroll_dist, center_x_offset, center_y_offset = -5, 300, 300
-
-    log(f"...กำลังเลื่อนหน้าจอลง (Mouse Wheel {scroll_dist})...")
-    
-    try:
-        rect = window.rectangle()
-        
-        # คำนวณจุดกลางหน้าจอตาม Offset จาก Config
-        center_x = rect.left + center_x_offset
-        center_y = rect.top + center_y_offset
-        
-        # คลิกเพื่อให้หน้าจอ Focus ก่อนเลื่อน
-        mouse.click(coords=(center_x, center_y))
-        time.sleep(0.5)
-        
-        # สั่งเลื่อนเมาส์
-        mouse.scroll(coords=(center_x, center_y), wheel_dist=scroll_dist)
-        time.sleep(1)
-        
+        if not os.path.exists(filename):
+            print(f"[X] ไม่พบไฟล์ config ที่: {os.path.abspath(filename)}")
+            return configparser.ConfigParser()
+            
+        config.read(filename, encoding='utf-8')
+        return config
     except Exception as e:
-        log(f"[!] Mouse scroll failed: {e}")
-        # Fallback: ถ้าใช้เมาส์ไม่ได้ ให้ลองกดปุ่ม Page Down แทน
-        window.type_keys("{PGDN}")
+        print(f"[X] FAILED: ไม่สามารถอ่านไฟล์ {filename} ได้: {e}")
+        return configparser.ConfigParser()
 
+# โหลด Config
+CONFIG = read_config()
+if not CONFIG.sections():
+    print("ไม่สามารถโหลด config.ini ได้ โปรดตรวจสอบไฟล์")
+    exit()
 
-# ================= 3. Test Function หลัก =================
+# ค่า Global
+WINDOW_TITLE = CONFIG['GLOBAL']['WINDOW_TITLE']
+SLEEP_TIME = CONFIG.getint('GLOBAL', 'LOAD_TIME_SEC')
 
-def test_paymentagent_scanagentbarcode():
-    print("[*] 1. กำลังเช็คว่าอยู่หน้าหลักไหม...")
+def test_agency_barcode(config):
+    """ทดสอบระบบ agency barcode"""
+    print("=" * 50)
+    print("[*] เริ่มทดสอบ: agency barcode")
 
-    # ใช้ค่าจาก APP_CONFIG
-    WINDOW_TITLE = APP_CONFIG.get("window_title")
-    BACKEND = APP_CONFIG.get("backend")
-    TIMEOUT = int(APP_CONFIG.get("timeout", 10)) 
+    # ดึงค่า Config ของส่วนคืนสินค้ามาเก็บไว้ในตัวแปรสั้นๆ
+    AB_CFG = config['agency barcode']
+    ID_CFG = config['ID']
+    GL_CFG = config['GLOBAL']
 
     try:
-        # เชื่อมต่อแอปพลิเคชัน
-        app = Application(backend=BACKEND).connect(title_re=WINDOW_TITLE, timeout=TIMEOUT)
+        # 1. เชื่อมต่อ App
+        print("\n[*] กำลังเชื่อมต่อหน้าจอหลัก...")
+        app = Application(backend="uia").connect(title_re=WINDOW_TITLE, timeout=10)
         main_window = app.top_window()
-        main_window.set_focus()
-        print("[/] เชื่อมต่อสำเร็จ")
+        print("[/] เชื่อมต่อหน้าจอขายสำเร็จ")
+        
+        # 2. กด A เพื่อเข้าหน้าagency
+        main_window.child_window(title=AB_CFG['HOTKEY_A_TITLE'], 
+                                 auto_id=AB_CFG['HOTKEY_A_AUTO_ID'], 
+                                 control_type=AB_CFG['HOTKEY_A_CONTROL_TYPE']).click_input()
+        time.sleep(SLEEP_TIME)
+        print("[/] เปิดหน้าagencyสำเร็จ")
 
-        # ========= ขั้นตอนคลิกเมนู A =========
-        # ใช้ Dict unpack ** ในการส่งค่าจาก ELEMENT_CONFIG
-        main_window.child_window(**ELEMENT_CONFIG['click_menu_A']).click_input()
-        time.sleep(1)
+        # 3. กด S เพื่อเข้าหน้าagency
+        main_window.child_window(title=AB_CFG['HOTKEY_S_TITLE'], 
+                                 auto_id=AB_CFG['HOTKEY_S_AUTO_ID'], 
+                                 control_type=AB_CFG['HOTKEY_A_CONTROL_TYPE']).click_input()
+        time.sleep(SLEEP_TIME)
+        print("[/] เปิดหน้าagency barcodeสำเร็จ")
 
-        # ========= ขั้นตอนคลิกเมนู S =========
-        main_window.child_window(**ELEMENT_CONFIG['click_menu_S']).click_input()
-        time.sleep(1)
+        # 4. กดปุ่ม 'อ่านบัตรประชาชน'
+        main_window.child_window(title=ID_CFG['ID_TITLE'], 
+                                 auto_id=ID_CFG['ID_AUTO_ID'], 
+                                 control_type=ID_CFG['ID_CONTROL_TYPE']).click_input()
+        time.sleep(SLEEP_TIME)
 
-        # ========= Scroll ลง (ใช้ฟังก์ชัน force_scroll_down) =========
-        force_scroll_down(main_window)
-
-        # ========= คลิกช่องเบอร์โทร =========
-        main_window.child_window(**ELEMENT_CONFIG['click_phone_number_field']).click_input()
-        time.sleep(1)
-
-        # กรอกเบอร์โทร
-        phone_keys = ELEMENT_CONFIG['type_phone_number_keys']
-        main_window.type_keys(phone_keys)
-        time.sleep(1)
-
-        # ========= คลิกอ่านบัตรประชาชน =========
-        main_window.child_window(**ELEMENT_CONFIG['click_read_id_card']).click_input()
-        time.sleep(1)
-
-        # ========= คลิกถัดไป =========
-        main_window.child_window(**ELEMENT_CONFIG['click_next_button']).click_input()
-        time.sleep(1)
-
-        print("[/] กรอกข้อมูลสำเร็จ")
+        print("[V] จบการทดสอบ: agency barcode สำเร็จ")
 
     except Exception as e:
-        print(f"[X] Error: {e}")
-
+        print(f"[X] Error during Return Product Test: {e}")
 
 if __name__ == "__main__":
-    test_paymentagent_scanagentbarcode()
+    test_agency_barcode(CONFIG)
