@@ -39,6 +39,7 @@ def test_agency_barcode(config):
     AB_CFG = config['agency barcode']
     ID_CFG = config['ID']
     GL_CFG = config['GLOBAL']
+    SCROLL_CFG = config['MOUSE_SCROLL']
 
     try:
         # 1. เชื่อมต่อ App
@@ -66,6 +67,30 @@ def test_agency_barcode(config):
                                  auto_id=ID_CFG['ID_AUTO_ID'], 
                                  control_type=ID_CFG['ID_CONTROL_TYPE']).click_input()
         time.sleep(SLEEP_TIME)
+        
+        print("\n[*] กำลัง Scroll หน้าจอด้วย Dynamic Config...")
+        
+        # ดึงค่าพิกัดและระยะการเลื่อนจาก Config (ใช้ getint/getfloat)
+        center_x_offset = config.getint('MOUSE_SCROLL', 'CENTER_X_OFFSET')
+        center_y_offset = config.getint('MOUSE_SCROLL', 'CENTER_Y_OFFSET')
+        wheel_dist = config.getint('MOUSE_SCROLL', 'WHEEL_DIST')
+        focus_delay = config.getfloat('MOUSE_SCROLL', 'FOCUS_DELAY')
+        scroll_delay = config.getfloat('MOUSE_SCROLL', 'SCROLL_DELAY')
+
+        # คำนวณพิกัด
+        rect = main_window.rectangle() # ใช้ main_window แทน window
+        center_x = rect.left + center_x_offset
+        center_y = rect.top + center_y_offset
+        
+        # คลิก 1 ครั้งเพื่อ Focus (ใช้ค่าหน่วงจาก Config)
+        mouse.click(coords=(center_x, center_y))
+        time.sleep(focus_delay)
+        
+        # หมุนล้อเมาส์ลง (ใช้ระยะและค่าหน่วงจาก Config)
+        mouse.scroll(coords=(center_x, center_y), wheel_dist=wheel_dist)
+        time.sleep(scroll_delay)
+        print(f"[/] Scroll ลง {wheel_dist} พิกัด ({center_x}, {center_y}) สำเร็จ")
+
 
         print("[V] จบการทดสอบ: agency barcode สำเร็จ")
 
