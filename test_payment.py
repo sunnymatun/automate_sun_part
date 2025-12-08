@@ -45,6 +45,7 @@ def test_agency_barcode(config):
         print("\n[*] กำลังเชื่อมต่อหน้าจอหลัก...")
         app = Application(backend="uia").connect(title_re=WINDOW_TITLE, timeout=10)
         main_window = app.top_window()
+        main_window.set_focus()
         print("[/] เชื่อมต่อหน้าจอขายสำเร็จ")
         
         # 2. กด A เพื่อเข้าหน้าagency
