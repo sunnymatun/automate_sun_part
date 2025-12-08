@@ -104,43 +104,45 @@ def test_agency_barcode(config):
                          control_type=AB['HOTKEY_S_CONTROL_TYPE']).click_input()
         time.sleep(SLEEP_TIME)
 
-        # 4. ค้นหาเบอร์โทร
-        phone_selector = {
-            "title": PH["PHONE_TITLE"],
-            "auto_id": PH["PHONE_AUTO_ID"],
-            "control_type": PH["PHONE_CONTROL_TYPE"]
-        }
+        # ====== ใส่ส่วนนี้แทนของเดิม ======
 
         print("[*] Dump UI Tree ก่อนค้นหา...")
         dump_tree(win)
 
-        found = False
-
-        # 4.1 ลองค้นหา
+        print("[*] ค้นหา Custom หลักของเบอร์โทร...")
         try:
-            print("[*] กำลังค้นหาช่องเบอร์โทรศัพท์...")
-            phone_field = win.child_window(**phone_selector).wait("ready", timeout=2)
-            found = True
+            phone_custom = win.child_window(
+                auto_id="PhoneNumber_UserControlBase",
+                control_type="Custom"
+            ).wait("ready", timeout=3)
         except:
-            print("[!] ไม่พบช่องเบอร์โทรในมุมมองนี้ — กำลัง Scroll...")
+            print("[!] ไม่พบ PhoneNumber_UserControlBase — Scroll ลง")
             force_scroll_down(win, config)
             time.sleep(SLEEP_TIME)
+            phone_custom = win.child_window(
+                auto_id="PhoneNumber_UserControlBase",
+                control_type="Custom"
+            ).wait("ready", timeout=3)
 
-        # 4.2 ค้นหาอีกครั้งหลัง scroll
-        if not found:
-            try:
-                print("[*] ลองค้นหาอีกครั้งหลัง Scroll...")
-                phone_field = win.child_window(**phone_selector).wait("ready", timeout=2)
-                found = True
-            except Exception as e:
-                print(f"[X] ยังหาไม่เจอ: {e}")
-                raise RuntimeError("ไม่สามารถเข้าถึงช่องเบอร์โทรศัพท์ได้")
+        print("[/] พบ Custom ของเบอร์โทร")
 
-        # 4.3 กรอกเบอร์โทรศัพท์
-        phone_field.click_input()
-        time.sleep(SLEEP_TIME)
-        win.type_keys(PH['PHONE_NUM'])
+        # หา Edit ตัวจริง
+        phone_edit = phone_custom.child_window(
+            auto_id="PhoneNumber",
+            control_type="Edit"
+        ).wait("ready", timeout=3)
+
+        print("[*] กำลังกรอกเบอร์โทร...")
+
+        phone_edit.click_input()
+        time.sleep(0.2)
+        phone_edit.type_keys("^a{BACKSPACE}")  # clear
+        time.sleep(0.2)
+        phone_edit.type_keys(PH['PHONE_NUM'], with_spaces=True)
+
         print("[/] กรอกเบอร์โทรสำเร็จ")
+
+        # ====== END ส่วนเบอร์โทร ======
 
         # 5. อ่านบัตรประชาชน
         win.child_window(title=ID_CFG['ID_TITLE'],
