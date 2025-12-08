@@ -106,18 +106,19 @@ def test_paymentagent_scanagentbarcode():
     TIMEOUT = int(APP_CONFIG.get("timeout", 10)) 
 
     try:
-        # เชื่อมต่อ: ใช้ค่าจาก Config
         app = Application(backend=BACKEND).connect(title_re=WINDOW_TITLE, timeout=TIMEOUT)
+        print("Debug: App connected.") # เพิ่มบรรทัดนี้
+
         main_window = app.top_window()
         main_window.set_focus()
+        print("Debug: Main window focused.") # เพิ่มบรรทัดนี้
         print("[/] เชื่อมต่อสำเร็จ")
 
-        # ========= ขั้นตอนคลิกเมนู A =========
-        # ใช้ Dict unpack ** ในการส่งค่าจาก ELEMENT_CONFIG เข้าไปใน child_window()
+        # เพิ่ม print selector ตรงนี้อีกครั้ง
         menu_A_selectors = ELEMENT_CONFIG['click_menu_A']
-        print(f"[*] Selector สำหรับ click_menu_A: {menu_A_selectors}")
-        main_window.child_window(**ELEMENT_CONFIG['click_menu_A']).click_input()
-        time.sleep(1)
+        print(f"Debug: Trying to click with selectors: {menu_A_selectors}") 
+
+        main_window.child_window(**menu_A_selectors).click_input()
 
         # ========= ขั้นตอนคลิกเมนู S =========
         main_window.child_window(**ELEMENT_CONFIG['click_menu_S']).click_input()
