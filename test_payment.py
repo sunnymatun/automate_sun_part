@@ -1,7 +1,5 @@
 from pywinauto.application import Application
 from pywinauto import mouse
-from pywinauto.mouse import wheel_mouse_input # ถึงแม้จะใช้ mouse.scroll แทน แต่เก็บไว้เป็น reference
-import time
 import configparser
 import os 
 
