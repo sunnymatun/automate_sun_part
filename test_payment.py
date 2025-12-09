@@ -4,7 +4,6 @@ from pywinauto import mouse
 import time
 import os
 
-# ชื่อไฟล์ Config
 CONFIG_FILE = "config.ini"
 
 # ==================== CONFIG & HELPER FUNCTIONS ====================
@@ -88,7 +87,7 @@ def test_agency_barcode(config):
         # 1. เชื่อมต่อ App
         print("[*] กำลังเชื่อมต่อหน้าจอหลัก...")
         app = Application(backend="uia").connect(title_re=WINDOW_TITLE, timeout=10)
-        win = app.top_window()
+        win = app.window(title_re=WINDOW_TITLE)
         win.set_focus()
         print("[/] เชื่อมต่อสำเร็จ")
 
@@ -111,23 +110,25 @@ def test_agency_barcode(config):
 
         print("[*] ค้นหา Custom หลักของเบอร์โทร...")
         try:
-            phone_custom = win.child_window(
+            phone_custom_spec = win.child_window(
                 auto_id="PhoneNumber_UserControlBase",
                 control_type="Custom"
-            ).wait("ready", timeout=3)
+            )
+            phone_custom_spec.wait("ready", timeout=3)
         except:
             print("[!] ไม่พบ PhoneNumber_UserControlBase — Scroll ลง")
             force_scroll_down(win, config)
             time.sleep(SLEEP_TIME)
-            phone_custom = win.child_window(
+            phone_custom_spec = win.child_window(
                 auto_id="PhoneNumber_UserControlBase",
                 control_type="Custom"
-            ).wait("ready", timeout=3)
+            )
+            phone_custom_spec.wait("ready", timeout=3)
 
         print("[/] พบ Custom ของเบอร์โทร")
 
-        # หา Edit ตัวจริง
-        phone_edit = phone_custom.child_window(
+        # หา Edit ตัวจริง (call child_window on WindowSpecification)
+        phone_edit = phone_custom_spec.child_window(
             auto_id="PhoneNumber",
             control_type="Edit"
         ).wait("ready", timeout=3)
@@ -156,5 +157,5 @@ def test_agency_barcode(config):
         print(f"[X] Error: {e}")
 
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     test_agency_barcode(CONFIG)
