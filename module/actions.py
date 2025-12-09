@@ -1,6 +1,31 @@
 from pywinauto.application import Application
 import time
-from scroll_utils import force_scroll_down
+from module.scroll_utils import force_scroll_down
+
+
+def _ensure_spec(window):
+    """Return a WindowSpecification for the given window-like object.
+
+    Many pywinauto wrapper objects (UIAWrapper) don't provide
+    child_window. Convert them to a WindowSpecification using the
+    parent Application so the rest of the code can call
+    child_window(...) reliably.
+    """
+    # If it already supports child_window, return as-is
+    if hasattr(window, "child_window"):
+        return window
+
+    # Try to construct a WindowSpecification from wrapper's app and handle
+    try:
+        app = getattr(window, "app", None)
+        handle = getattr(window, "handle", None)
+        if app is not None and handle is not None:
+            return app.window(handle=handle)
+    except Exception:
+        pass
+
+    # Fallback: return original object (will raise if unsupported)
+    return window
 
 
 def connect_app(window_title):
@@ -13,7 +38,9 @@ def connect_app(window_title):
 
 
 def open_agency(win, AB, delay):
-    win.child_window(
+    spec = _ensure_spec(win)
+
+    spec.child_window(
         title=AB['HOTKEY_AGENCY_TITLE'],
         auto_id=AB['HOTKEY_AGENCY_AUTO_ID'],
         control_type=AB['HOTKEY_AGENCY_CONTROL_TYPE']
@@ -24,7 +51,9 @@ def open_agency(win, AB, delay):
 
 
 def open_SAB(win, AB, delay):
-    win.child_window(
+    spec = _ensure_spec(win)
+
+    spec.child_window(
         title=AB['HOTKEY_SAB_TITLE'],
         auto_id=AB['HOTKEY_SAB_AUTO_ID'],
         control_type=AB['HOTKEY_SAB_CONTROL_TYPE']
@@ -38,22 +67,31 @@ def fill_phone_number(win, PH, delay, config):
     print("[*] ค้นหาเบอร์โทร...")
 
     try:
-        phone_custom = win.child_window(
+        spec = _ensure_spec(win)
+
+        phone_custom = spec.child_window(
             auto_id="PhoneNumber_UserControlBase",
             control_type="Custom"
-        ).wait("ready", timeout=3)
+        )
+
+        phone_custom.wait("ready", timeout=5)
     except:
         print("[!] ไม่พบ ต้อง scroll ลง")
         force_scroll_down(win, config)
-        phone_custom = win.child_window(
+        spec = _ensure_spec(win)
+        phone_custom = spec.child_window(
             auto_id="PhoneNumber_UserControlBase",
             control_type="Custom"
-        ).wait("ready", timeout=3)
+        )
+
+        phone_custom.wait("ready", timeout=5)
 
     phone_edit = phone_custom.child_window(
         auto_id="PhoneNumber",
         control_type="Edit"
-    ).wait("ready", timeout=3)
+    )
+
+    phone_edit.wait("ready", timeout=5)
 
     phone_edit.click_input()
     time.sleep(0.2)
@@ -65,7 +103,9 @@ def fill_phone_number(win, PH, delay, config):
 
 
 def click_read_id(win, ID, delay):
-    win.child_window(
+    spec = _ensure_spec(win)
+
+    spec.child_window(
         title=ID['ID_TITLE'],
         auto_id=ID['ID_AUTO_ID'],
         control_type=ID['ID_CONTROL_TYPE']
@@ -76,7 +116,9 @@ def click_read_id(win, ID, delay):
 
 
 def click_next(win, NX, delay):
-    win.child_window(
+    spec = _ensure_spec(win)
+
+    spec.child_window(
         title=NX['NEXT_TITLE'],
         auto_id=NX['NEXT_AUTO_ID'],
         control_type=NX['NEXT_CONTROL_TYPE']
