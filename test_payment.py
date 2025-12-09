@@ -79,9 +79,10 @@ def test_agency_barcode(config):
     print("=" * 50)
     print("[*] เริ่มทดสอบ: agency barcode")
 
-    AB = config['agency barcode']
-    ID_CFG = config['ID']
+    AB = config['agency']
+    ID = config['ID']
     PH = config['phone']
+    NX = config['NEXT']
 
     try:
         # 1. เชื่อมต่อ App
@@ -92,15 +93,15 @@ def test_agency_barcode(config):
         print("[/] เชื่อมต่อสำเร็จ")
 
         # 2. กด A
-        win.child_window(title=AB['HOTKEY_A_TITLE'],
-                         auto_id=AB['HOTKEY_A_AUTO_ID'],
-                         control_type=AB['HOTKEY_A_CONTROL_TYPE']).click_input()
+        win.child_window(title=AB['HOTKEY_AGENCY_TITLE'],
+                         auto_id=AB['HOTKEY_AGENCY_AUTO_ID'],
+                         control_type=AB['HOTKEY_AGENCY_CONTROL_TYPE']).click_input()
         time.sleep(SLEEP_TIME)
 
         # 3. กด S
-        win.child_window(title=AB['HOTKEY_S_TITLE'],
-                         auto_id=AB['HOTKEY_S_AUTO_ID'],
-                         control_type=AB['HOTKEY_S_CONTROL_TYPE']).click_input()
+        win.child_window(title=AB['HOTKEY_SAB_TITLE'],
+                         auto_id=AB['HOTKEY_SAB_AUTO_ID'],
+                         control_type=AB['HOTKEY_SAB_CONTROL_TYPE']).click_input()
         time.sleep(SLEEP_TIME)
 
         # ====== ใส่ส่วนนี้แทนของเดิม ======
@@ -146,12 +147,19 @@ def test_agency_barcode(config):
         # ====== END ส่วนเบอร์โทร ======
 
         # 5. อ่านบัตรประชาชน
-        win.child_window(title=ID_CFG['ID_TITLE'],
-                         auto_id=ID_CFG['ID_AUTO_ID'],
-                         control_type=ID_CFG['ID_CONTROL_TYPE']).click_input()
+        win.child_window(title=ID['ID_TITLE'],
+                         auto_id=ID['ID_AUTO_ID'],
+                         control_type=ID['ID_CONTROL_TYPE']).click_input()
         time.sleep(SLEEP_TIME)
 
-        print("[V] ทดสอบสำเร็จ!")
+        # 6.กดปุ่มถัดไป
+        win.child_window(title=NX['NEXT_TITLE'],
+                         auto_id=NX['NEXT_AUTO_ID'],
+                         control_type=NX['NEXT_CONTROL_TYPE']).click_input()
+        time.sleep(SLEEP_TIME)
+        
+        # สิิ้นสุดหน้านี้ ต้องการ barcode เพื่อไปต่อ
+        print("[V] สิิ้นสุดหน้านี้ ต้องการ barcode เพื่อไปต่อ")
 
     except Exception as e:
         print(f"[X] Error: {e}")
