@@ -157,5 +157,5 @@ def test_agency_barcode(config):
         print(f"[X] Error: {e}")
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     test_agency_barcode(CONFIG)
