@@ -62,22 +62,30 @@ def force_scroll_down(window, config):
         rect = window.rectangle()
         center_x = rect.left + center_x_offset
         center_y = rect.top + center_y_offset
-        
+
+        # ⭐ เพิ่ม print ใหม่ (ไม่ยุ่งกับ logic)
+        print(f"[i] Window Rect -> left={rect.left}, top={rect.top}, right={rect.right}, bottom={rect.bottom}")
+        print(f"[i] คำนวณตำแหน่งคลิก -> ({center_x}, {center_y})")
+        print("[i] คลิกเพื่อโฟกัสก่อน Scroll")
+
         mouse.click(coords=(center_x, center_y))
         time.sleep(focus_delay)
-        
+
+        print("[i] กำลัง Scroll...")
         mouse.scroll(coords=(center_x, center_y), wheel_dist=wheel_dist)
         time.sleep(scroll_delay)
+
         print("[/] Scroll สำเร็จ")
     except Exception as e:
         print(f"[!] Scroll failed: {e}, ใช้ PageDown แทน")
+        print("[i] ส่งคำสั่ง {PGDN}")
         window.type_keys("{PGDN}")
 
 # ==================== MAIN TEST FUNCTION ====================
 
-def test_agency_barcode(config):
+def test_SAB(config):
     print("=" * 50)
-    print("[*] เริ่มทดสอบ: agency barcode")
+    print("[*] เริ่มทดสอบ: SAB")
 
     AB = config['agency']
     ID = config['ID']
@@ -103,8 +111,6 @@ def test_agency_barcode(config):
                          auto_id=AB['HOTKEY_SAB_AUTO_ID'],
                          control_type=AB['HOTKEY_SAB_CONTROL_TYPE']).click_input()
         time.sleep(SLEEP_TIME)
-
-        # ====== ใส่ส่วนนี้แทนของเดิม ======
 
         print("[*] Dump UI Tree ก่อนค้นหา...")
         dump_tree(win)
@@ -151,12 +157,14 @@ def test_agency_barcode(config):
                          auto_id=ID['ID_AUTO_ID'],
                          control_type=ID['ID_CONTROL_TYPE']).click_input()
         time.sleep(SLEEP_TIME)
+        print("[/] กดปุ่มอ่านบัตรประชาชนสำเร็จ")
 
         # 6.กดปุ่มถัดไป
         win.child_window(title=NX['NEXT_TITLE'],
                          auto_id=NX['NEXT_AUTO_ID'],
                          control_type=NX['NEXT_CONTROL_TYPE']).click_input()
         time.sleep(SLEEP_TIME)
+        print("[/] กดปุ่มถัดไปสำเร็จ")
         
         # สิิ้นสุดหน้านี้ ต้องการ barcode เพื่อไปต่อ
         print("[V] สิิ้นสุดหน้านี้ ต้องการ barcode เพื่อไปต่อ")
@@ -166,4 +174,4 @@ def test_agency_barcode(config):
 
 
 if __name__ == "__main__":
-    test_agency_barcode(CONFIG)
+    test_SAB(CONFIG)
