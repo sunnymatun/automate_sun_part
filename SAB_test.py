@@ -5,7 +5,7 @@ from module.actions import (
     fill_phone_number, click_read_id, click_next
 )
 
-def test_SAB(config):
+def SAB_test(config):
     print("="*50)
     print("[*] เริ่มทดสอบ SAB")
 
@@ -52,4 +52,4 @@ if __name__ == "__main__":
     if not config.sections():
         print("[X] โหลด config.ini ไม่สำเร็จ")
     else:
-        test_SAB(config)
+        SAB_test(config)

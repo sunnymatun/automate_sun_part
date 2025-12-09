@@ -36,31 +36,213 @@ def connect_app(window_title):
     print("[/] Connected OK")
     return win
 
-
+# ปุ่มตัวแทนรับชำระเงิน
 def open_agency(win, AB, delay):
     spec = _ensure_spec(win)
 
     spec.child_window(
         title=AB['HOTKEY_AGENCY_TITLE'],
-        auto_id=AB['HOTKEY_AGENCY_AUTO_ID'],
-        control_type=AB['HOTKEY_AGENCY_CONTROL_TYPE']
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
     ).click_input()
 
     time.sleep(delay)
-    print("[/] กด A สำเร็จ")
+    print("[/] กดปุ่มตัวแทนรับชำระเงินสำเร็จ")
 
-
+# ปุ่มแสกนบาร์โค้ดของหน่วยงาน
 def open_SAB(win, AB, delay):
     spec = _ensure_spec(win)
 
     spec.child_window(
         title=AB['HOTKEY_SAB_TITLE'],
-        auto_id=AB['HOTKEY_SAB_AUTO_ID'],
-        control_type=AB['HOTKEY_SAB_CONTROL_TYPE']
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
     ).click_input()
 
     time.sleep(delay)
-    print("[/] กด S สำเร็จ")
+    print("[/] กดปุ่มแสกนบาร์โค้ดของหน่วยงานสำเร็จ")
+
+# ปุ่มบริการทั้งหมด
+def open_AS(win, AB, delay):
+    spec = _ensure_spec(win)
+
+    spec.child_window(
+        title=AB['HOTKEY_AS_TITLE'],
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
+    ).click_input()
+
+    time.sleep(delay)
+    print("[/] กดปุ่มบริการทั้งหมดสำเร็จ")
+
+# ปุ่มบริการธนาคาร
+def open_BaS(win, AB, delay):
+    spec = _ensure_spec(win)
+
+    spec.child_window(
+        title=AB['HOTKEY_BaS_TITLE'],
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
+    ).click_input()
+
+    time.sleep(delay)
+    print("[/] กดปุ่มบริการธนาคารสำเร็จ")
+
+# ปุ่มบริการการจอง
+def open_BoS(win, AB, delay):
+    spec = _ensure_spec(win)
+
+    spec.child_window(
+        title=AB['HOTKEY_BoS_TITLE'],
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
+    ).click_input()
+
+    time.sleep(delay)
+    print("[/] กดปุ่มบริการการจองสำเร็จ")
+
+# ปุ่มบริการชำระเงิน DPost
+def open_DPS(win, AB, delay):
+    spec = _ensure_spec(win)
+
+    spec.child_window(
+        title=AB['HOTKEY_DPS_TITLE'],
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
+    ).click_input()
+
+    time.sleep(delay)
+    print("[/] กดปุ่มบริการชำระเงิน DPostสำเร็จ")
+
+# ปุ่มบริการชำระค่าสินค้า
+def open_GPS(win, AB, delay):
+    spec = _ensure_spec(win)
+
+    spec.child_window(
+        title=AB['HOTKEY_GPS_TITLE'],
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
+    ).click_input()
+
+    time.sleep(delay)
+    print("[/] กดปุ่มบริการชำระค่าสินค้าสำเร็จ")
+
+# ปุ่มบริการประกันภัย
+def open_IS(win, AB, delay):
+    spec = _ensure_spec(win)
+
+    spec.child_window(
+        title=AB['HOTKEY_IS_TITLE'],
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
+    ).click_input()
+
+    time.sleep(delay)
+    print("[/] กดปุ่มบริการประกันภัยสำเร็จ")
+
+# ปุ่มบริการสินเชื่อ
+def open_LS(win, AB, delay):
+    spec = _ensure_spec(win)
+
+    spec.child_window(
+        title=AB['HOTKEY_LS_TITLE'],
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
+    ).click_input()
+
+    time.sleep(delay)
+    print("[/] กดปุ่มบริการสินเชื่อสำเร็จ")
+
+# ปุ่มบริการกองทุนรวม
+def open_MFS(win, AB, delay):
+    spec = _ensure_spec(win)
+
+    spec.child_window(
+        title=AB['HOTKEY_MFS_TITLE'],
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
+    ).click_input()
+
+    time.sleep(delay)
+    print("[/] กดปุ่มบริการกองทุนรวมสำเร็จ")
+
+# ปุ่มบริการไปรษณีย์
+def open_PoS(win, AB, delay):
+    spec = _ensure_spec(win)
+
+    spec.child_window(
+        title=AB['HOTKEY_PoS_TITLE'],
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
+    ).click_input()
+
+    time.sleep(delay)
+    print("[/] กดปุ่มบริการไปรษณีย์สำเร็จ")
+
+# ปุ่มบริการชำระเงิน
+def open_PaS(win, AB, delay):
+    spec = _ensure_spec(win)
+
+    spec.child_window(
+        title=AB['HOTKEY_PaS_TITLE'],
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
+    ).click_input()
+
+    time.sleep(delay)
+    print("[/] กดปุ่มบริการชำระเงินสำเร็จ")
+
+# ปุ่มชำระบิลมหาวิยาลัย
+def open_UnS(win, AB, delay):
+    spec = _ensure_spec(win)
+
+    spec.child_window(
+        title=AB['HOTKEY_UnS_TITLE'],
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
+    ).click_input()
+
+    time.sleep(delay)
+    print("[/] กดปุ่มชำระบิลมหาวิยาลัยสำเร็จ")
+
+# ปุ่มสาธารณูปโภค
+def open_UtS(win, AB, delay):
+    spec = _ensure_spec(win)
+
+    spec.child_window(
+        title=AB['HOTKEY_UtS_TITLE'],
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
+    ).click_input()
+
+    time.sleep(delay)
+    print("[/] กดปุ่มสาธารณูปโภคสำเร็จ")
+
+# ปุ่มตรวจสอบเบอร์ Wallet@Post
+def open_CW(win, AB, delay):
+    spec = _ensure_spec(win)
+
+    spec.child_window(
+        title=AB['HOTKEY_CW_TITLE'],
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
+    ).click_input()
+
+    time.sleep(delay)
+    print("[/] กดปุ่มตรวจสอบเบอร์ Wallet@Postสำเร็จ")
+
+# ปุ่มการยืนยันตัวตน
+def open_eKYC(win, AB, delay):
+    spec = _ensure_spec(win)
+
+    spec.child_window(
+        title=AB['HOTKEY_eKYC_TITLE'],
+        auto_id=AB['HOTKEY_AUTO_ID'],
+        control_type=AB['HOTKEY_CONTROL_TYPE']
+    ).click_input()
+
+    time.sleep(delay)
+    print("[/] กดปุ่มการยืนยันตัวตนสำเร็จ")
 
 
 def fill_phone_number(win, PH, delay, config):
