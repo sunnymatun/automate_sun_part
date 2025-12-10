@@ -248,32 +248,37 @@ def open_eKYC(win, AB, delay):
 def fill_phone_number(win, PH, delay, config):
     print("[*] ค้นหาเบอร์โทร...")
 
-    try:
-        spec = _ensure_spec(win)
+    spec = _ensure_spec(win)
+    max_scroll = 10   # เลื่อนสูงสุด 10 ครั้ง (กันค้าง)
 
-        phone_custom = spec.child_window(
-            auto_id="PhoneNumber_UserControlBase",
-            control_type="Custom"
-        )
+    phone_custom = None
 
-        phone_custom.wait("ready", timeout=5)
-    except:
-        print("[!] ไม่พบ ต้อง scroll ลง")
-        force_scroll_down(win, config)
-        spec = _ensure_spec(win)
-        phone_custom = spec.child_window(
-            auto_id="PhoneNumber_UserControlBase",
-            control_type="Custom"
-        )
+    for i in range(max_scroll):
+        try:
+            phone_custom = spec.child_window(
+                auto_id="PhoneNumber_UserControlBase",
+                control_type="Custom"
+            )
+            phone_custom.wait("ready", timeout=1)
 
-        phone_custom.wait("ready", timeout=5)
+            print(f"[/] พบช่องเบอร์โทร (รอบที่ {i+1})")
+            break
 
+        except:
+            print(f"[!] ไม่พบช่องเบอร์โทร → scroll ครั้งที่ {i+1}/{max_scroll}")
+            force_scroll_down(win, config)
+            time.sleep(delay)
+            spec = _ensure_spec(win)
+
+    if phone_custom is None:
+        raise Exception("[X] ไม่พบ PhoneNumber_UserControlBase หลัง scroll 10 ครั้ง")
+
+    #       กรอกเบอร์โทร
     phone_edit = phone_custom.child_window(
         auto_id="PhoneNumber",
         control_type="Edit"
     )
-
-    phone_edit.wait("ready", timeout=5)
+    phone_edit.wait("ready", timeout=3)
 
     phone_edit.click_input()
     time.sleep(0.2)
@@ -282,7 +287,6 @@ def fill_phone_number(win, PH, delay, config):
     phone_edit.type_keys(PH['PHONE_NUM'], with_spaces=True)
 
     print("[/] กรอกเบอร์โทรเสร็จ")
-
 
 def click_read_id(win, ID, delay):
     spec = _ensure_spec(win)
