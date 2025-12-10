@@ -290,11 +290,12 @@ def fill_phone_number(win, PH, delay, config):
 
 def click_postalCode(win, ID, delay):
     spec = _ensure_spec(win)
-
     postalCode_Edit = spec.child_window(
         auto_id=ID['PC_AUTO_ID'],
         control_type=ID['PC_CONTROL_TYPE']
-    ).click_input()
+    )
+    postalCode_Edit.wait("ready", timeout=3)
+    postalCode_Edit.click_input()
     time.sleep(delay)
     postalCode_Edit.click_input()
     time.sleep(0.2)
