@@ -1,8 +1,7 @@
 from module.config_loader import read_config
-from module.ui_debug import dump_tree
 from module.actions import (
     connect_app, open_agency, open_SAB,
-    fill_phone_number, click_read_id, click_next
+    fill_phone_number, click_read_id, click_next,click_postalCode
 )
 
 def SAB_test(config):
@@ -25,8 +24,9 @@ def SAB_test(config):
         open_agency(win, AB, DELAY)
         open_SAB(win, AB, DELAY)
 
-        # Debug ก่อนค้นหา
-        dump_tree(win)
+        # อ่านบัตร
+        click_read_id(win, ID, DELAY)
+        click_postalCode(win, ID, DELAY)
 
         # กรอกเบอร์โทร
         fill_phone_number(win, PH, DELAY, config)

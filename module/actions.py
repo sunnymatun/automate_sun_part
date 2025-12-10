@@ -288,6 +288,22 @@ def fill_phone_number(win, PH, delay, config):
 
     print("[/] กรอกเบอร์โทรเสร็จ")
 
+def click_postalCode(win, ID, delay):
+    spec = _ensure_spec(win)
+
+    postalCode_Edit = spec.child_window(
+        auto_id=ID['PC_AUTO_ID'],
+        control_type=ID['PC_CONTROL_TYPE']
+    ).click_input()
+    time.sleep(delay)
+    postalCode_Edit.click_input()
+    time.sleep(0.2)
+    postalCode_Edit.type_keys("^a{BACKSPACE}")
+    time.sleep(0.2)
+    postalCode_Edit.type_keys(ID['POSTAL_CODE'], with_spaces=True)
+
+    print("[/] กรอกรหัสไปรษณีย์")
+
 def click_read_id(win, ID, delay):
     spec = _ensure_spec(win)
 
