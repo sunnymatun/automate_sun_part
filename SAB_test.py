@@ -26,13 +26,11 @@ def SAB_test(config):
 
         # อ่านบัตร
         click_read_id(win, ID, DELAY)
+        # กรอก รหัสไปรษณีย์
         click_postalCode(win, ID, DELAY)
 
         # กรอกเบอร์โทร
         fill_phone_number(win, PH, DELAY, config)
-
-        # อ่านบัตร
-        click_read_id(win, ID, DELAY)
 
         # ถัดไป
         click_next(win, NX, DELAY)
